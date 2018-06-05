@@ -2,5 +2,6 @@
 
 if [ -n $script_type ]; then
 	echo Script $script_type called.
-	printenv > $script_type.txt
+	echo $@ > $script_type.txt
+	printenv >> $script_type.txt
 fi
