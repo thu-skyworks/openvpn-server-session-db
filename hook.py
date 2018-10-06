@@ -61,8 +61,10 @@ if __name__ == '__main__':
         pass
     elif scriptType == 'client-connect':
         if os.getenv('IV_SSL') is None:  # client didn't push peer info
+            with open(args.args[0], 'w') as f:
+               f.write('disable')
             logger.info("Client didn't push peer info, rejecting.")
-            sys.exit(1)
+            sys.exit(0)
         daemonStartTime = datetime.fromtimestamp(
             int(os.getenv('daemon_start_time')))
         username = os.getenv('username')
@@ -87,12 +89,14 @@ if __name__ == '__main__':
             )
         conn = engine.connect()
         connectedSessions = conn.execute(stmt).fetchone()[0]
+        logger.debug("The user has {} running sessions.".
+                     format(connectedSessions))
         if connectedSessions >= config['max_sessions_per_user']:
-            # with open(args[0], 'rw') as f:
-            #    f.write('disable')
+            with open(args.args[0], 'w') as f:
+               f.write('disable')
             logger.info("Maximum sessions for user " + username +
                         " reached, authentication rejected.")
-            sys.exit(1)
+            sys.exit(0)
         ins = vpnsessions.insert().values(
             daemon_start_time=daemonStartTime,
             username=username,
