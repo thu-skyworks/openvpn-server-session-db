@@ -84,7 +84,7 @@ if __name__ == '__main__':
                 and_(
                     vpnsessions.c.username == username,
                     vpnsessions.c.daemon_start_time == daemonStartTime,
-                    vpnsessions.c.disconnect_time == None
+                    vpnsessions.c.disconnect_time.__eq__(None)
                 )
             )
         conn = engine.connect()
@@ -126,7 +126,7 @@ if __name__ == '__main__':
             where(
                 and_(
                     vpnsessions.c.daemon_start_time == daemonStartTime,
-                    vpnsessions.c.disconnect_time== None,
+                    vpnsessions.c.disconnect_time.__eq__(None),
                     vpnsessions.c.vpn_ip == vpnIP
                 )
             ).\
