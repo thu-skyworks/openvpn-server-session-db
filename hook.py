@@ -60,7 +60,7 @@ if __name__ == '__main__':
     elif scriptType == 'down':
         pass
     elif scriptType == 'client-connect':
-        if os.getenv('IV_SSL') is None:  # client didn't push peer info
+        if os.getenv('IV_PLAT') is None:  # client didn't push peer info
             with open(args.args[0], 'w') as f:
                f.write('disable')
             logger.info("Client didn't push peer info, rejecting.")
