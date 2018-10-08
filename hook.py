@@ -2,7 +2,7 @@
 
 import os
 from sqlalchemy import create_engine, MetaData, Table, Column, \
-    String, DateTime, Interval, func
+    String, DateTime, func
 from sqlalchemy.sql import select, and_
 from sqlalchemy.dialects.mysql import SMALLINT, INTEGER
 import json
@@ -62,13 +62,15 @@ if __name__ == '__main__':
     elif scriptType == 'client-connect':
         if os.getenv('IV_PLAT') is None:  # client didn't push peer info
             with open(args.args[0], 'w') as f:
-               f.write('disable')
+                f.write('disable')
             logger.info("Client didn't push peer info, rejecting.")
             sys.exit(0)
         daemonStartTime = datetime.fromtimestamp(
             int(os.getenv('daemon_start_time')))
         username = os.getenv('username')
         ip = os.getenv('trusted_ip')
+        if ip is None:
+            ip = os.getenv('trusted_ip6')
         vpnIP = os.getenv('ifconfig_pool_remote_ip')
         clientOS = ' '.join(filter(None, [os.getenv('IV_PLAT'),
                                           os.getenv('IV_PLAT_VER')]))
@@ -93,7 +95,7 @@ if __name__ == '__main__':
                      format(connectedSessions))
         if connectedSessions >= config['max_sessions_per_user']:
             with open(args.args[0], 'w') as f:
-               f.write('disable')
+                f.write('disable')
             logger.info("Maximum sessions for user " + username +
                         " reached, authentication rejected.")
             sys.exit(0)
